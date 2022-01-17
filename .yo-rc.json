@@ -1,0 +1,14 @@
+{
+  "@plentymarkets/generator-plugin": {
+    "promptValues": {
+      "type": "shipping"
+    },
+    "answers": {
+      "name": "BambooEcourier",
+      "author": "Bureau Mario Kehl",
+      "type": "shipping",
+      "description": "plentymarkets plugin for TMS eCourier by bamboo software",
+      "version": "0.0.1"
+    }
+  }
+}
