@@ -7,5 +7,8 @@
     "description"       :   "plentymarkets plugin for TMS eCourier by bamboo software",
     "author"            :   "Bureau Mario Kehl",
     "authorIcon"        :   "icon_author_xs.png",
-    "serviceProvider"   :   "BambooEcourier\\Providers\\BambooEcourierServiceProvider"
+    "serviceProvider"   :   "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
+    "dependencies"      :   {
+        "guzzlehttp/guzzle": "^7.0"
+    }
 }
