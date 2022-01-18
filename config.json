@@ -41,7 +41,7 @@
     {
         "tab": "Webservice",
         "key": "CarType",
-        "label": "CarType",
+        "label": "CarType (optional)",
         "type": "text",
         "default": ""
     },

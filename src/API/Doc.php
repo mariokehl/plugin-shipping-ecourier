@@ -34,7 +34,7 @@ class Doc implements \JsonSerializable
     {
         return (object) [
             'Doc' => [
-                'Id' => $this->Id,
+                'Id'    => $this->Id,
                 'Order' => $this->Order
             ]
         ];

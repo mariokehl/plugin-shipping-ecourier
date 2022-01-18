@@ -12,7 +12,6 @@ use Plenty\Modules\Order\Shipping\Package\Contracts\OrderShippingPackageReposito
 use Plenty\Modules\Order\Shipping\PackageType\Contracts\ShippingPackageTypeRepositoryContract;
 use Plenty\Modules\Order\Shipping\ParcelService\Models\ParcelServicePreset;
 use Plenty\Modules\Plugin\Storage\Contracts\StorageRepositoryContract;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\ConfigRepository;
@@ -97,7 +96,6 @@ class ShippingController extends Controller
 	 * @param ShippingInformationRepositoryContract $shippingInformationRepositoryContract
 	 * @param ShippingPackageTypeRepositoryContract $shippingPackageTypeRepositoryContract
 	 * @param ConfigRepository $config
-	 * @param LibraryCallContract $externalSdk
 	 */
 	public function __construct(
 		Request $request,
@@ -107,8 +105,7 @@ class ShippingController extends Controller
 		StorageRepositoryContract $storageRepository,
 		ShippingInformationRepositoryContract $shippingInformationRepositoryContract,
 		ShippingPackageTypeRepositoryContract $shippingPackageTypeRepositoryContract,
-		ConfigRepository $config,
-		LibraryCallContract $externalSdk
+		ConfigRepository $config
 	) {
 		$this->request = $request;
 		$this->orderRepository = $orderRepository;
@@ -126,7 +123,6 @@ class ShippingController extends Controller
 		$partnerApiKey 	= $this->config->get('BambooEcourier.apiKey');
 
 		$this->webservice = pluginApp(EcourierWS::class, [
-			$externalSdk,
 			$partnerBaseUri,
 			[
 				'apiKey' => $partnerApiKey
@@ -209,7 +205,7 @@ class ShippingController extends Controller
 				$receiverCountry,
 				$receiverPostalCode,
 				$receiverTown,
-				$shipmentDate,
+				date('Y-m-d', strtotime('tomorrow')),
 				$receiverName2,
 				$receiverPhone,
 				$receiverEmail,
@@ -225,12 +221,15 @@ class ShippingController extends Controller
 			$parcelData = [];
 
 			// iterating through packages
-			$packageCount = 0;
 			foreach ($packages as $key => $package) {
-				if ($packageCount === 0) { $firstPackageId = $package->id; }
+				if (count($parcelData) === 0) {
+					$firstPackageId = $package->id;
+				}
 				$packageWeight = $package->weight / 1000;
-				$parcelData[] = pluginApp(EcourierPackage::class, [number_format($packageWeight, 2, '.', '')]);
-				$packageCount++;
+
+				$parcelData[] = pluginApp(EcourierPackage::class, [
+					number_format($packageWeight, 2, '.', '')
+				]);
 			}
 
 			// customer reference
@@ -249,15 +248,23 @@ class ShippingController extends Controller
 				],
 				$parcelData
 			]);
-			$doc = pluginApp(EcourierDoc::class, [time(), $shipmentData]);
+			$containerDoc = pluginApp(EcourierDoc::class, [time(), $shipmentData]);
 
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsDaten', ['shipmentData' => json_encode($shipmentData)]);
-			$response = $this->webservice->EcourierWS_CreateOrder($doc);
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsErstellung', ['response' => json_encode($response)]);
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsDaten', ['Doc' => json_encode($containerDoc)]);
+			$response = $this->webservice->EcourierWS_CreateOrder($containerDoc);
+
+			if (
+				!$response ||
+				(is_array($response) && isset($response['error_msg']))
+			) {
+				$this->getLogger(__METHOD__)->error('BambooEcourier::webservice.WSerr', ['response' => json_encode($response)]);
+			} else {
+				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsErstellung', ['response' => json_encode($response)]);
+			}
 
 			$shipmentItems = [];
-			if (isset($response->Order->HWB)) {
-				$label = $response->Order->Label;
+			if (isset($response['Doc']['Order'][0]['HWB'])) {
+				$label = $response['Doc']['Order'][0]['Label'];
 				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.PDFs', ['label' => $label]);
 
 				// handles the response
@@ -281,7 +288,6 @@ class ShippingController extends Controller
 					$shipmentItems
 				);
 			}
-	
 		}
 
 		// return all results to service
@@ -533,7 +539,7 @@ class ShippingController extends Controller
 	/**
 	 * Handling of response values, fires S3 storage and updates order shipping package
 	 *
-	 * @param stdClass $response
+	 * @param object $response
 	 * @param integer $packageId
 	 * @return array
 	 */
@@ -541,13 +547,13 @@ class ShippingController extends Controller
 	{
 		$shipmentItems = [];
 
-		$shipmentData = array_shift($response->Order);
+		$shipmentData = array_shift($response['Doc']['Order']);
 
-		if (strlen($shipmentData->HWB) > 0 && isset($shipmentData->Label)) {
-			$shipmentNumber = $shipmentData->HWB;
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['length' => strlen($shipmentData->Label)]);
+		if (strlen($shipmentData['HWB']) > 0 && isset($shipmentData['Label'])) {
+			$shipmentNumber = $shipmentData['HWB'];
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['length' => strlen($shipmentData['Label'])]);
 			$storageObject = $this->saveLabelToS3(
-				$shipmentData->Label,
+				base64_decode($shipmentData['Label']),
 				$packageId . '.pdf'
 			);
 			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['storageObject' => json_encode($storageObject)]);
@@ -562,6 +568,7 @@ class ShippingController extends Controller
 				$this->buildPackageInfo($shipmentNumber, $storageObject->key)
 			);
 		}
+
 		return $shipmentItems;
 	}
 }

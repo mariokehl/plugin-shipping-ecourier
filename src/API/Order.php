@@ -18,7 +18,7 @@ class Order
      * @var string $LabelFormat
      * @access public
      */
-    public $LabelFormat = self::LABEL_FORMAT_A6;
+    public $LabelFormat = self::LABEL_FORMAT_A6L;
 
     /**
      * @var Client $Client

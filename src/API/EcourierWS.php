@@ -10,11 +10,6 @@ class EcourierWS
     const BASE_URI_DEMO = 'https://bamboo-demo.de/ecourier/sf/web/transfer/sj/';
 
     /**
-     * @var LibraryCallContract $externalSdk
-     */
-    private $externalSdk;
-
-    /**
      * @var string $baseUri
      */
     private $baseUri;
@@ -30,30 +25,30 @@ class EcourierWS
     private $echo = false;
 
     /**
-     * @param LibraryCallContract $externalSdk
      * @param string $uri The endpoint uri (don't forget the ending /)
      * @param array $options A array of config values
      * @param boolean $echo Set to true if you want to use echo mode
      */
     public function __construct(
-        $externalSdk,
         $baseUri,
         array $options = [],
         $echo = false
     ) {
-        $this->externalSdk = $externalSdk;
         $this->baseUri = $echo ? self::BASE_URI_DEMO : $baseUri;
         $this->apiKey = isset($options['apiKey']) === true ? $options['apiKey'] : 'Missing API-Key!';
         $this->echo = $echo;
     }
 
     /**
-     * @param mixed $parameters
-     * @return mixed
+     * @param mixed $parameters The value ready to be JSON encoded
+     * @return \stdClass|array Object or array in case of error
      */
     public function EcourierWS_CreateOrder($parameters)
     {
-        return $this->externalSdk->call(
+        /** @var LibraryCallContract $libCall */
+        $libCall = pluginApp(LibraryCallContract::class);
+
+        $res = $libCall->call(
             'BambooEcourier::guzzle_connector',
             [
                 'uri'       => $this->baseUri . 'order/new',
@@ -62,5 +57,7 @@ class EcourierWS
                 'payload'   => json_encode($parameters)
             ]
         );
+
+        return $res;
     }
 }
