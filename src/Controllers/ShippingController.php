@@ -81,6 +81,12 @@ class ShippingController extends Controller
 	private $config;
 
 	/**
+	 * Shipment constants
+	 */
+	const DEFAULT_PACKAGE_NAME		= 'Wareninhalt';
+	const MINIMUM_FALLBACK_WEIGHT	= 0.2;
+
+	/**
 	 * Plugin key
 	 */
 	const PLUGIN_KEY = 'BambooEcourier';
@@ -163,6 +169,7 @@ class ShippingController extends Controller
 		$senderPostalCode     = $this->config->get('BambooEcourier.senderPostalCode', '36272');
 		$senderTown           = $this->config->get('BambooEcourier.senderTown', 'Niederaula');
 
+		/** @var EcourierAddress $senderAddress */
 		$senderAddress = pluginApp(EcourierAddress::class, [
 			EcourierAddress::ADDRESS_TYPE_PICKUP,
 			$senderName,
@@ -173,6 +180,8 @@ class ShippingController extends Controller
 			$senderTown,
 			$shipmentDate
 		]);
+		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.pickupTimeFrom', '15:30:00'));
+		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '15:30:00'));
 
 		foreach ($orderIds as $orderId) {
 			$order = $this->orderRepository->findOrderById($orderId);
@@ -197,6 +206,7 @@ class ShippingController extends Controller
 			$receiverEmail 	   		= $address->email;
 			$receiverPhone			= $address->phone;
 
+			/** @var EcourierAddress $receiverAddress */
 			$receiverAddress = pluginApp(EcourierAddress::class, [
 				EcourierAddress::ADDRESS_TYPE_DELIVERY,
 				$receiverName1,
@@ -205,17 +215,20 @@ class ShippingController extends Controller
 				$receiverCountry,
 				$receiverPostalCode,
 				$receiverTown,
-				date('Y-m-d', strtotime('tomorrow')),
-				$receiverName2,
-				$receiverPhone,
-				$receiverEmail,
+				date('Y-m-d', strtotime('tomorrow'))
 			]);
+			$receiverAddress->setName2($receiverName2);
+			$receiverAddress->setTelefon($receiverPhone);
+			$receiverAddress->setMail($receiverEmail);
 
 			// gets order shipping packages from current order
 			$packages = $this->orderShippingPackage->listOrderShippingPackages($order->id);
 
 			// package sums
-			$firstPackageId = null;
+			$firstPackage = [
+				'id'   => null,
+				'name' => self::DEFAULT_PACKAGE_NAME
+			];
 
 			// The API packages
 			$parcelData = [];
@@ -223,23 +236,46 @@ class ShippingController extends Controller
 			// iterating through packages
 			foreach ($packages as $key => $package) {
 				if (count($parcelData) === 0) {
-					$firstPackageId = $package->id;
+					$firstPackage['id'] = $package->id;
+					$packageType = $this->shippingPackageTypeRepositoryContract->findShippingPackageTypeById($package->packageId);
+					$firstPackage['name'] = $packageType->name;
 				}
-				$packageWeight = $package->weight / 1000;
-
+				if ($package->weight) {
+					$packageWeight = $package->weight / 1000;
+				} else {
+					$packageWeight = self::MINIMUM_FALLBACK_WEIGHT;
+				}
 				$parcelData[] = pluginApp(EcourierPackage::class, [
 					number_format($packageWeight, 2, '.', '')
 				]);
 			}
 
 			// customer reference
-			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 35);
+			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 50);
+
+			// overwrite default delivery notice from comments (must contain @ecourier)
+			$deliveryNotice = $this->config->get('BambooEcourier.deliveryNotice', '');
+			/** @var Comment $comment */
+			foreach ($order->comments as $comment) {
+				if (!$comment->userId || !stripos($comment->text, '@ecourier')) {
+					continue;
+				} else {
+					$commentText = strip_tags($comment->text);
+					$commentText = str_replace('@ecourier', '', $commentText);
+					$commentText = trim($commentText);
+					$commentText = substr($commentText, 0, 255);
+					$deliveryNotice = $commentText;
+					break;
+				}
+			}
 
 			// register shipment
+
+			/** @var EcourierOrder $shipmentData */
 			$shipmentData = pluginApp(EcourierOrder::class, [
 				$ExtOrderId,
 				$WSClient,
-				"EUR", //tbd
+				'EUR',
 				$ProductClient,
 				$CarType,
 				[
@@ -248,6 +284,10 @@ class ShippingController extends Controller
 				],
 				$parcelData
 			]);
+			$shipmentData->setContent($firstPackage['name']);
+			$shipmentData->setInfoCourier($deliveryNotice);
+
+			/** @var EcourierDoc $containerDoc */
 			$containerDoc = pluginApp(EcourierDoc::class, [time(), $shipmentData]);
 
 			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsDaten', ['Doc' => json_encode($containerDoc)]);
@@ -268,7 +308,7 @@ class ShippingController extends Controller
 				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.PDFs', ['label' => $label]);
 
 				// handles the response
-				$shipmentItems = $this->handleAfterRegisterShipment($response, $firstPackageId);
+				$shipmentItems = $this->handleAfterRegisterShipment($response, $firstPackage['id']);
 
 				// adds result
 				$this->createOrderResult[$orderId] = $this->buildResultArray(

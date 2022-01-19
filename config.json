@@ -89,5 +89,26 @@
             "DE": "Germany"
         },
         "default": "DE"
+    },
+    {
+        "tab": "Shipping",
+        "key": "pickupTimeFrom",
+        "label": "Pick-up time FROM (format: hh:mm:ss)",
+        "type": "text",
+        "default": "15:30:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "pickupTimeTo",
+        "label": "Pick-up time TO (format: hh:mm:ss)",
+        "type": "text",
+        "default": "18:30:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryNotice",
+        "label": "Additional delivery notice",
+        "type": "text",
+        "default": "Achtung Lebensmittel, bei Problemen bitte direkt melden. Sicher Abstellen ok mit Karte in BK."
     }
 ]

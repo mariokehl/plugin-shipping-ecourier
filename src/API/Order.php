@@ -57,6 +57,16 @@ class Order
     public $Package = [];
 
     /**
+     * @var string $Content
+     */
+    public $Content;
+
+    /**
+     * @var string $InfoCourier
+     */
+    public $InfoCourier;
+
+    /**
      * @param string $ExtOrderId
      * @param Client $Client
      * @param string $Currency
@@ -82,5 +92,25 @@ class Order
         $this->CarType = $CarType;
         $this->Address = $Address;
         $this->Package = $Package;
+    }
+
+    /**
+     * Set the value of Content
+     */
+    public function setContent($Content): self
+    {
+        $this->Content = $Content;
+
+        return $this;
+    }
+
+    /**
+     * Set the value of InfoCourier
+     */
+    public function setInfoCourier($InfoCourier): self
+    {
+        $this->InfoCourier = $InfoCourier;
+
+        return $this;
     }
 }
