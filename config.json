@@ -29,14 +29,14 @@
         "key": "ClientNumber",
         "label": "ClientNumber",
         "type": "text",
-        "default": ""
+        "default": "25209"
     },
     {
         "tab": "Webservice",
         "key": "ProductClient",
         "label": "ProductClient",
         "type": "text",
-        "default": ""
+        "default": "550214"
     },
     {
         "tab": "Webservice",
@@ -50,35 +50,35 @@
         "key": "senderName",
         "label": "Name",
         "type": "text",
-        "default": ""
+        "default": "bamboo Software OHG"
     },
     {
         "tab": "Sender",
         "key": "senderStreet",
         "label": "Street",
         "type": "text",
-        "default": ""
+        "default": "Helmholtzstrasse"
     },
     {
         "tab": "Sender",
         "key": "senderNo",
         "label": "No",
         "type": "text",
-        "default": ""
+        "default": "2-9"
     },
     {
         "tab": "Sender",
         "key": "senderPostalCode",
         "label": "Postal code",
         "type": "text",
-        "default": ""
+        "default": "10587"
     },
     {
         "tab": "Sender",
         "key": "senderTown",
         "label": "Town",
         "type": "text",
-        "default": ""
+        "default": "Berlin"
     },
     {
         "tab": "Sender",

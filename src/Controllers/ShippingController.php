@@ -153,8 +153,8 @@ class ShippingController extends Controller
 		$shipmentDate = date('Y-m-d');
 
 		// reads webservice data from plugin config
-		$ClientNumber	= $this->config->get('BambooEcourier.ClientNumber', '');
-		$ProductClient 	= $this->config->get('BambooEcourier.ProductClient', '');
+		$ClientNumber	= $this->config->get('BambooEcourier.ClientNumber', '25209');
+		$ProductClient 	= $this->config->get('BambooEcourier.ProductClient', '550214');
 		$CarType		= $this->config->get('BambooEcourier.CarType', '');
 
 		$WSClient = pluginApp(EcourierClient::class, [
@@ -162,12 +162,12 @@ class ShippingController extends Controller
 		]);
 
 		// reads sender data from plugin config
-		$senderName           = $this->config->get('BambooEcourier.senderName', 'Fleischerei Schäfer OHG');
-		$senderStreet         = $this->config->get('BambooEcourier.senderStreet', 'Hersfelder Str.');
-		$senderNo             = $this->config->get('BambooEcourier.senderNo', '20');
+		$senderName           = $this->config->get('BambooEcourier.senderName', 'bamboo Software OHG');
+		$senderStreet         = $this->config->get('BambooEcourier.senderStreet', 'Helmholtzstrasse');
+		$senderNo             = $this->config->get('BambooEcourier.senderNo', '2-9');
 		$senderCountry        = $this->config->get('BambooEcourier.senderCountry', 'DE');
-		$senderPostalCode     = $this->config->get('BambooEcourier.senderPostalCode', '36272');
-		$senderTown           = $this->config->get('BambooEcourier.senderTown', 'Niederaula');
+		$senderPostalCode     = $this->config->get('BambooEcourier.senderPostalCode', '10587');
+		$senderTown           = $this->config->get('BambooEcourier.senderTown', 'Berlin');
 
 		/** @var EcourierAddress $senderAddress */
 		$senderAddress = pluginApp(EcourierAddress::class, [
@@ -181,7 +181,7 @@ class ShippingController extends Controller
 			$shipmentDate
 		]);
 		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.pickupTimeFrom', '15:30:00'));
-		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '15:30:00'));
+		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '18:30:00'));
 
 		foreach ($orderIds as $orderId) {
 			$order = $this->orderRepository->findOrderById($orderId);
