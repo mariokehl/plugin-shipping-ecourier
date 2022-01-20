@@ -324,7 +324,7 @@ class ShippingController extends Controller
 			} else {
 				$this->createOrderResult[$orderId] = $this->buildResultArray(
 					false,
-					$response['Doc']['Order'][0]['Error']['message'],
+					$response['Doc']['Error']['message'],
 					false,
 					$shipmentItems
 				);
