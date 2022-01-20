@@ -152,15 +152,6 @@ class ShippingController extends Controller
 		$orderIds = $this->getOpenOrderIds($orderIds);
 		$shipmentDate = date('Y-m-d');
 
-		// reads webservice data from plugin config
-		$ClientNumber	= $this->config->get('BambooEcourier.ClientNumber', '25209');
-		$ProductClient 	= $this->config->get('BambooEcourier.ProductClient', '550214');
-		$CarType		= $this->config->get('BambooEcourier.CarType', '');
-
-		$WSClient = pluginApp(EcourierClient::class, [
-			$ClientNumber
-		]);
-
 		// reads sender data from plugin config
 		$senderName           = $this->config->get('BambooEcourier.senderName', 'bamboo Software OHG');
 		$senderStreet         = $this->config->get('BambooEcourier.senderStreet', 'Helmholtzstrasse');
@@ -252,9 +243,6 @@ class ShippingController extends Controller
 				]);
 			}
 
-			// customer reference
-			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 50);
-
 			// overwrite default delivery notice from comments (must contain @ecourier)
 			$deliveryNotice = $this->config->get('BambooEcourier.deliveryNotice', '');
 			/** @var Comment $comment */
@@ -271,27 +259,18 @@ class ShippingController extends Controller
 				}
 			}
 
+			// customer reference
+			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 50);
+
 			// register shipment
-
-			/** @var EcourierOrder $shipmentData */
-			$shipmentData = pluginApp(EcourierOrder::class, [
+			$containerDoc = $this->prepareDocumentForEcourier(
 				$ExtOrderId,
-				$WSClient,
-				'EUR',
-				$ProductClient,
-				$CarType,
-				[
-					$senderAddress,
-					$receiverAddress
-				],
-				$parcelData
-			]);
-			$shipmentData->setContent($firstPackage['name']);
-			$shipmentData->setInfoCourier($deliveryNotice);
-
-			/** @var EcourierDoc $containerDoc */
-			$containerDoc = pluginApp(EcourierDoc::class, [time(), $shipmentData]);
-
+				$senderAddress,
+				$receiverAddress,
+				$parcelData,
+				$firstPackage['name'],
+				$deliveryNotice
+			);
 			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsDaten', ['Doc' => json_encode($containerDoc)]);
 			$response = $this->webservice->EcourierWS_CreateOrder($containerDoc);
 
@@ -613,5 +592,51 @@ class ShippingController extends Controller
 		}
 
 		return $shipmentItems;
+	}
+
+	/**
+	 * Prepare data for transport as JSON via the interface
+	 *
+	 * @param string $ExtOrderId
+	 * @param EcourierAddress $senderAddress
+	 * @param EcourierAddress $receiverAddress
+	 * @param array $parcelData
+	 * @param string $Content
+	 * @param string $InfoCourier
+	 * @return EcourierDoc
+	 */
+	private function prepareDocumentForEcourier(
+		$ExtOrderId,
+		$senderAddress,
+		$receiverAddress,
+		$parcelData,
+		$Content = '',
+		$InfoCourier = ''
+	) {
+		/** @var EcourierClient $WSClient */
+		$WSClient = pluginApp(EcourierClient::class, [
+			$this->config->get('BambooEcourier.ClientNumber', '25209')
+		]);
+
+		/** @var EcourierOrder $Order */
+		$Order = pluginApp(EcourierOrder::class, [
+			$ExtOrderId,
+			$WSClient,
+			'EUR',
+			$this->config->get('BambooEcourier.ProductClient', '550214'),
+			$this->config->get('BambooEcourier.CarType', ''),
+			[
+				$senderAddress,
+				$receiverAddress
+			],
+			$parcelData
+		]);
+		$Order->setContent($Content);
+		$Order->setInfoCourier($InfoCourier);
+
+		/** @var EcourierDoc $Doc */
+		$Doc = pluginApp(EcourierDoc::class, [time(), $Order]);
+
+		return $Doc;
 	}
 }
