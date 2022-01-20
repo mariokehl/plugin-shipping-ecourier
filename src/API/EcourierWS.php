@@ -22,21 +22,20 @@ class EcourierWS
     /**
      * @var boolean $echo
      */
-    private $echo = false;
+    private $echo = true;
 
     /**
      * @param string $uri The endpoint uri (don't forget the ending /)
      * @param array $options A array of config values
-     * @param boolean $echo Set to true if you want to use echo mode
+     * @param boolean $demo Set to true if you want to use demo system
      */
     public function __construct(
         $baseUri,
         array $options = [],
-        $echo = false
+        $demo = true
     ) {
-        $this->baseUri = $echo ? self::BASE_URI_DEMO : $baseUri;
+        $this->baseUri = $demo ? self::BASE_URI_DEMO : $baseUri;
         $this->apiKey = isset($options['apiKey']) === true ? $options['apiKey'] : 'Missing API-Key!';
-        $this->echo = $echo;
     }
 
     /**
@@ -53,7 +52,7 @@ class EcourierWS
             [
                 'uri'       => $this->baseUri . 'order/new',
                 'apiKey'    => $this->apiKey,
-                'mode'      => $this->echo,
+                'echo'      => $this->echo,
                 'payload'   => json_encode($parameters)
             ]
         );

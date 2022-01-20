@@ -7,7 +7,7 @@ $options['headers'] = [
 ];
 $options['body'] = SdkRestApi::getParam('payload');
 
-if (SdkRestApi::getParam('mode')) {
+if (SdkRestApi::getParam('echo')) {
     $options['query']['modus'] = 'echo';
 }
 
