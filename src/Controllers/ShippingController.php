@@ -298,6 +298,7 @@ class ShippingController extends Controller
 				(is_array($response) && isset($response['error_msg']))
 			) {
 				$this->getLogger(__METHOD__)->error('BambooEcourier::webservice.WSerr', ['response' => json_encode($response)]);
+				continue;
 			} else {
 				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsErstellung', ['response' => json_encode($response)]);
 			}
@@ -323,7 +324,7 @@ class ShippingController extends Controller
 			} else {
 				$this->createOrderResult[$orderId] = $this->buildResultArray(
 					false,
-					$response['error_msg'],
+					$response['Doc']['Order'][0]['Error']['message'],
 					false,
 					$shipmentItems
 				);
