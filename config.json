@@ -110,5 +110,19 @@
         "label": "Additional delivery notice",
         "type": "text",
         "default": "Achtung Lebensmittel, bei Problemen bitte direkt melden. Sicher Abstellen ok mit Karte in BK."
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryTimeFrom",
+        "label": "Delivery time FROM (format: hh:mm:ss)",
+        "type": "text",
+        "default": "08:00:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryTimeTo",
+        "label": "Delivery time TO (format: hh:mm:ss)",
+        "type": "text",
+        "default": "12:00:00"
     }
 ]

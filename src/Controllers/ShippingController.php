@@ -180,8 +180,8 @@ class ShippingController extends Controller
 			$senderTown,
 			$shipmentDate
 		]);
-		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.pickupTimeFrom', '15:30:00'));
-		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '18:30:00'));
+		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.pickupTimeFrom', '00:00:00'));
+		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '00:00:00'));
 
 		foreach ($orderIds as $orderId) {
 			$order = $this->orderRepository->findOrderById($orderId);
@@ -217,6 +217,8 @@ class ShippingController extends Controller
 				$receiverTown,
 				date('Y-m-d', strtotime('tomorrow'))
 			]);
+			$receiverAddress->setTimeFrom($this->config->get('BambooEcourier.deliveryTimeFrom', '00:00:00'));
+			$receiverAddress->setTimeTo($this->config->get('BambooEcourier.deliveryTimeTo', '00:00:00'));
 			$receiverAddress->setName2($receiverName2);
 			$receiverAddress->setTelefon($receiverPhone);
 			$receiverAddress->setMail($receiverEmail);
