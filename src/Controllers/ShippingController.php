@@ -261,7 +261,9 @@ class ShippingController extends Controller
 			$receiverAddress->setAddressInfo($deliveryNotice);
 
 			// customer reference
-			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 50);
+			$ExtOrderId = $this->config->get('BambooEcourier.ExtOrderId', '');
+			$ExtOrderId = str_replace('<tstamp>', time(), $ExtOrderId);
+			$ExtOrderId = str_replace('<n>', str_pad($orderId, 12, '0', STR_PAD_LEFT), $ExtOrderId);
 
 			// register shipment
 			$containerDoc = $this->prepareDocumentForEcourier(

@@ -40,6 +40,13 @@
     },
     {
         "tab": "Webservice",
+        "key": "ExtOrderId",
+        "label": "ExtOrderId",
+        "type": "text",
+        "default": "900_<n>"
+    },
+    {
+        "tab": "Webservice",
         "key": "CarType",
         "label": "CarType (optional)",
         "type": "text",
