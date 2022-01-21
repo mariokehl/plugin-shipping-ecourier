@@ -68,6 +68,12 @@ class Address
     public $City = null;
 
     /**
+     * @var string $AddressInfo
+     * @access public
+     */
+    public $AddressInfo;
+
+    /**
      * @var string $Date
      * @access public
      */
@@ -142,6 +148,16 @@ class Address
     public function setMail($Mail): self
     {
         $this->Mail = $Mail;
+
+        return $this;
+    }
+
+    /**
+     * Set the value of AddressInfo
+     */
+    public function setAddressInfo($AddressInfo): self
+    {
+        $this->AddressInfo = $AddressInfo;
 
         return $this;
     }

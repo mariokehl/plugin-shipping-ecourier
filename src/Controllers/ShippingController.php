@@ -258,6 +258,7 @@ class ShippingController extends Controller
 					break;
 				}
 			}
+			$receiverAddress->setAddressInfo($deliveryNotice);
 
 			// customer reference
 			$ExtOrderId = substr('PM_' . time() . '_' . $orderId, 0, 50);
