@@ -2,7 +2,6 @@
 
 namespace BambooEcourier\Controllers;
 
-use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
 use Plenty\Modules\Account\Address\Models\Address;
 use Plenty\Modules\Cloud\Storage\Models\StorageObject;
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
@@ -31,24 +30,9 @@ class ShippingController extends Controller
 	use Loggable;
 
 	/**
-	 * @var Request $request
-	 */
-	private $request;
-
-	/**
-	 * @var EcourierWS $webservice
-	 */
-	private $webservice;
-
-	/**
 	 * @var OrderRepositoryContract $orderRepository
 	 */
 	private $orderRepository;
-
-	/**
-	 * @var AddressRepositoryContract $addressRepository
-	 */
-	private $addressRepository;
 
 	/**
 	 * @var OrderShippingPackageRepositoryContract $orderShippingPackage
@@ -71,20 +55,25 @@ class ShippingController extends Controller
 	private $shippingPackageTypeRepositoryContract;
 
 	/**
-	 * @var array $createOrderResult
-	 */
-	private $createOrderResult = [];
-
-	/**
 	 * @var ConfigRepository $config
 	 */
 	private $config;
 
 	/**
+	 * @var EcourierWS $webservice
+	 */
+	private $webservice;
+
+	/**
+	 * @var array $createOrderResult
+	 */
+	private $createOrderResult = [];
+
+	/**
 	 * Shipment constants
 	 */
-	const DEFAULT_PACKAGE_NAME		= 'Wareninhalt';
-	const MINIMUM_FALLBACK_WEIGHT	= 0.2;
+	const DEFAULT_PACKAGE_NAME = 'Wareninhalt';
+	const MINIMUM_FALLBACK_WEIGHT = 0.2;
 
 	/**
 	 * Plugin key
@@ -94,9 +83,7 @@ class ShippingController extends Controller
 	/**
 	 * ShipmentController constructor.
 	 *
-	 * @param Request $request
 	 * @param OrderRepositoryContract $orderRepository
-	 * @param AddressRepositoryContract $addressRepositoryContract
 	 * @param OrderShippingPackageRepositoryContract $orderShippingPackage
 	 * @param StorageRepositoryContract $storageRepository
 	 * @param ShippingInformationRepositoryContract $shippingInformationRepositoryContract
@@ -104,18 +91,14 @@ class ShippingController extends Controller
 	 * @param ConfigRepository $config
 	 */
 	public function __construct(
-		Request $request,
 		OrderRepositoryContract $orderRepository,
-		AddressRepositoryContract $addressRepositoryContract,
 		OrderShippingPackageRepositoryContract $orderShippingPackage,
 		StorageRepositoryContract $storageRepository,
 		ShippingInformationRepositoryContract $shippingInformationRepositoryContract,
 		ShippingPackageTypeRepositoryContract $shippingPackageTypeRepositoryContract,
 		ConfigRepository $config
 	) {
-		$this->request = $request;
 		$this->orderRepository = $orderRepository;
-		$this->addressRepository = $addressRepositoryContract;
 		$this->orderShippingPackage = $orderShippingPackage;
 		$this->storageRepository = $storageRepository;
 
@@ -153,12 +136,12 @@ class ShippingController extends Controller
 		$shipmentDate = date('Y-m-d');
 
 		// reads sender data from plugin config
-		$senderName           = $this->config->get('BambooEcourier.senderName', 'bamboo Software OHG');
-		$senderStreet         = $this->config->get('BambooEcourier.senderStreet', 'Helmholtzstrasse');
-		$senderNo             = $this->config->get('BambooEcourier.senderNo', '2-9');
-		$senderCountry        = $this->config->get('BambooEcourier.senderCountry', 'DE');
-		$senderPostalCode     = $this->config->get('BambooEcourier.senderPostalCode', '10587');
-		$senderTown           = $this->config->get('BambooEcourier.senderTown', 'Berlin');
+		$senderName = $this->config->get('BambooEcourier.senderName', 'bamboo Software OHG');
+		$senderStreet = $this->config->get('BambooEcourier.senderStreet', 'Helmholtzstrasse');
+		$senderNo = $this->config->get('BambooEcourier.senderNo', '2-9');
+		$senderCountry = $this->config->get('BambooEcourier.senderCountry', 'DE');
+		$senderPostalCode = $this->config->get('BambooEcourier.senderPostalCode', '10587');
+		$senderTown = $this->config->get('BambooEcourier.senderTown', 'Berlin');
 
 		/** @var EcourierAddress $senderAddress */
 		$senderAddress = pluginApp(EcourierAddress::class, [
@@ -189,13 +172,13 @@ class ShippingController extends Controller
 				$receiverName2 = $receiverName1;
 				$receiverName1 = $address->companyName;
 			}
-			$receiverStreet        	= $address->street;
-			$receiverNo            	= $address->houseNumber;
-			$receiverCountry       	= $address->country->isoCode2;
-			$receiverPostalCode    	= $address->postalCode;
-			$receiverTown          	= $address->town;
-			$receiverEmail 	   		= $address->email;
-			$receiverPhone			= $address->phone;
+			$receiverStreet	= $address->street;
+			$receiverNo	= $address->houseNumber;
+			$receiverCountry = $address->country->isoCode2;
+			$receiverPostalCode = $address->postalCode;
+			$receiverTown = $address->town;
+			$receiverEmail = $address->email;
+			$receiverPhone = $address->phone;
 
 			/** @var EcourierAddress $receiverAddress */
 			$receiverAddress = pluginApp(EcourierAddress::class, [
@@ -341,6 +324,7 @@ class ShippingController extends Controller
 	 *
 	 * @param Request $request
 	 * @param array $orderIds
+	 * @deprecated Unused right now
 	 * @internal see BambooEcourierServiceProvider
 	 * @return array
 	 */
@@ -557,7 +541,9 @@ class ShippingController extends Controller
 	public function getLabels(Request $request, $orderIds)
 	{
 		$orderIds = $this->getOrderIds($request, $orderIds);
+
 		$labels = [];
+
 		foreach ($orderIds as $orderId) {
 			$results = $this->orderShippingPackage->listOrderShippingPackages($orderId);
 			/** @var OrderShippingPackage $result */
@@ -609,7 +595,6 @@ class ShippingController extends Controller
 				$this->buildPackageInfo($shipmentNumber, $storageObject->key)
 			);
 		}
-
 		return $shipmentItems;
 	}
 

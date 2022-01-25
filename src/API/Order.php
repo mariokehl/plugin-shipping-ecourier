@@ -4,8 +4,8 @@ namespace BambooEcourier\API;
 
 class Order
 {
-    const LABEL_FORMAT_A4  = 'A4';
-    const LABEL_FORMAT_A6  = 'A6';
+    const LABEL_FORMAT_A4 = 'A4';
+    const LABEL_FORMAT_A6 = 'A6';
     const LABEL_FORMAT_A6L = 'A6l';
 
     /**
