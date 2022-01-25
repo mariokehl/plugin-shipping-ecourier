@@ -273,6 +273,10 @@ class ShippingController extends Controller
 			}
 			$receiverAddress->setAddressInfo($deliveryNotice);
 
+			// short delivery notice
+			$shortDeliveryNotice = $this->config->get('BambooEcourier.shortDeliveryNotice', '');
+			$receiverAddress->setName3($shortDeliveryNotice);
+
 			// customer reference
 			$ExtOrderId = $this->config->get('BambooEcourier.ExtOrderId', '');
 			$ExtOrderId = str_replace('<tstamp>', time(), $ExtOrderId);
