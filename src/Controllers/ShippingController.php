@@ -228,18 +228,31 @@ class ShippingController extends Controller
 
 			// iterating through packages
 			foreach ($packages as $key => $package) {
+
+				// determine packageType
+				$packageType = $this->shippingPackageTypeRepositoryContract->findShippingPackageTypeById($package->packageId);
+
+				// save essentials for order level
 				if (count($parcelData) === 0) {
 					$firstPackage['id'] = $package->id;
-					$packageType = $this->shippingPackageTypeRepositoryContract->findShippingPackageTypeById($package->packageId);
 					$firstPackage['name'] = $packageType->name;
 				}
+
+				// weight
 				if ($package->weight) {
 					$packageWeight = $package->weight / 1000;
 				} else {
 					$packageWeight = self::MINIMUM_FALLBACK_WEIGHT;
 				}
+
+				// package dimensions
+				list($length, $width, $height) = $this->getPackageDimensions($packageType);
+
 				$parcelData[] = pluginApp(EcourierPackage::class, [
-					number_format($packageWeight, 2, '.', '')
+					number_format($packageWeight, 2, '.', ''),
+					'' . $length,
+					'' . $width,
+					'' . $height
 				]);
 			}
 
@@ -513,7 +526,6 @@ class ShippingController extends Controller
 	 * Returns the package dimensions by package type
 	 *
 	 * @param $packageType
-	 * @deprecated since v0.1.2
 	 * @return array
 	 */
 	private function getPackageDimensions($packageType): array
