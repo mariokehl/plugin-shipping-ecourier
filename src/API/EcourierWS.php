@@ -50,10 +50,10 @@ class EcourierWS
         $res = $libCall->call(
             'BambooEcourier::guzzle_connector',
             [
-                'uri'       => $this->baseUri . 'order/new',
-                'apiKey'    => $this->apiKey,
-                'echo'      => $this->echo,
-                'payload'   => json_encode($parameters)
+                'uri' => $this->baseUri . 'order/new',
+                'apiKey' => $this->apiKey,
+                'echo' => $this->echo,
+                'payload' => json_encode($parameters)
             ]
         );
 

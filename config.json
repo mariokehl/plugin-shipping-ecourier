@@ -120,6 +120,13 @@
     },
     {
         "tab": "Shipping",
+        "key": "shortDeliveryNotice",
+        "label": "Short delivery notice (visible on label, max. length is 50 chars)",
+        "type": "text",
+        "default": "Sicher Abstellen ok mit Karte in BK."
+    },
+    {
+        "tab": "Shipping",
         "key": "deliveryTimeFrom",
         "label": "Delivery time FROM (format: hh:mm:ss)",
         "type": "text",

@@ -26,6 +26,12 @@ class Address
     public $Name2;
 
     /**
+     * @var string $Name3
+     * @access public
+     */
+    public $Name3;
+
+    /**
      * @var string $Telefon
      * @access public
      */
@@ -128,6 +134,16 @@ class Address
     public function setName2($Name2): self
     {
         $this->Name2 = $Name2;
+
+        return $this;
+    }
+
+    /**
+     * Set the value of Name3
+     */
+    public function setName3($Name3): self
+    {
+        $this->Name3 = $Name3;
 
         return $this;
     }

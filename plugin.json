@@ -1,14 +1,16 @@
 {
-    "name"              :   "BambooEcourier",
-    "namespace"         :   "BambooEcourier",
-    "type"              :   "shipping",
-    "version"           :   "0.0.1",
-    "pluginIcon"        :   "icon_plugin_xs.png",
-    "description"       :   "plentymarkets plugin for TMS eCourier by bamboo software",
-    "author"            :   "Bureau Mario Kehl",
-    "authorIcon"        :   "icon_author_xs.png",
-    "serviceProvider"   :   "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
-    "dependencies"      :   {
+    "name": "BambooEcourier",
+    "namespace": "BambooEcourier",
+    "type": "shipping",
+    "isClosedSource": true,
+    "version": "0.0.1",
+    "pluginIcon": "icon_plugin_xs.png",
+    "price": 91.99,
+    "description": "plentymarkets plugin for TMS eCourier by bamboo software",
+    "author": "Bureau Mario Kehl",
+    "authorIcon": "icon_author_xs.png",
+    "serviceProvider": "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
+    "dependencies": {
         "guzzlehttp/guzzle": "^7.0"
     }
 }
