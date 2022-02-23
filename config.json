@@ -1,1 +1,142 @@
-[]
+[
+    {
+        "tab": "General",
+        "key": "mode",
+        "label": "Mode",
+        "type": "dropdown",
+        "possibleValues": {
+            "0": "Test",
+            "1": "Productive"
+        },
+        "default": "0"
+    },
+    {
+        "tab": "General",
+        "key": "baseUri",
+        "label": "URI",
+        "type": "text",
+        "default": "https://bamboo-demo.de/ecourier/sf/web/transfer/sj/"
+    },
+    {
+        "tab": "General",
+        "key": "apiKey",
+        "label": "API-Key",
+        "type": "password",
+        "default": ""
+    },
+    {
+        "tab": "Webservice",
+        "key": "ClientNumber",
+        "label": "ClientNumber",
+        "type": "text",
+        "default": "25209"
+    },
+    {
+        "tab": "Webservice",
+        "key": "ProductClient",
+        "label": "ProductClient",
+        "type": "text",
+        "default": "550214"
+    },
+    {
+        "tab": "Webservice",
+        "key": "ExtOrderId",
+        "label": "ExtOrderId",
+        "type": "text",
+        "default": "900_<n>"
+    },
+    {
+        "tab": "Webservice",
+        "key": "CarType",
+        "label": "CarType (optional)",
+        "type": "text",
+        "default": ""
+    },
+    {
+        "tab": "Sender",
+        "key": "senderName",
+        "label": "Name",
+        "type": "text",
+        "default": "bamboo Software OHG"
+    },
+    {
+        "tab": "Sender",
+        "key": "senderStreet",
+        "label": "Street",
+        "type": "text",
+        "default": "Helmholtzstrasse"
+    },
+    {
+        "tab": "Sender",
+        "key": "senderNo",
+        "label": "No",
+        "type": "text",
+        "default": "2-9"
+    },
+    {
+        "tab": "Sender",
+        "key": "senderPostalCode",
+        "label": "Postal code",
+        "type": "text",
+        "default": "10587"
+    },
+    {
+        "tab": "Sender",
+        "key": "senderTown",
+        "label": "Town",
+        "type": "text",
+        "default": "Berlin"
+    },
+    {
+        "tab": "Sender",
+        "key": "senderCountry",
+        "label": "Country",
+        "type": "dropdown",
+        "possibleValues": {
+            "DE": "Germany"
+        },
+        "default": "DE"
+    },
+    {
+        "tab": "Shipping",
+        "key": "pickupTimeFrom",
+        "label": "Pick-up time FROM (format: hh:mm:ss)",
+        "type": "text",
+        "default": "15:30:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "pickupTimeTo",
+        "label": "Pick-up time TO (format: hh:mm:ss)",
+        "type": "text",
+        "default": "18:30:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryNotice",
+        "label": "Additional delivery notice",
+        "type": "text",
+        "default": "Achtung Lebensmittel, bei Problemen bitte direkt melden. Sicher Abstellen ok mit Karte in BK."
+    },
+    {
+        "tab": "Shipping",
+        "key": "shortDeliveryNotice",
+        "label": "Short delivery notice (visible on label, max. length is 50 chars)",
+        "type": "text",
+        "default": "Sicher Abstellen ok mit Karte in BK."
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryTimeFrom",
+        "label": "Delivery time FROM (format: hh:mm:ss)",
+        "type": "text",
+        "default": "08:00:00"
+    },
+    {
+        "tab": "Shipping",
+        "key": "deliveryTimeTo",
+        "label": "Delivery time TO (format: hh:mm:ss)",
+        "type": "text",
+        "default": "12:00:00"
+    }
+]
