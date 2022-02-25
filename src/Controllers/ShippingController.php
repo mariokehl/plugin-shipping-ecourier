@@ -159,7 +159,7 @@ class ShippingController extends Controller
 
 		foreach ($orderIds as $orderId) {
 			$order = $this->orderRepository->findOrderById($orderId);
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::plenty.Order', ['order' => json_encode($order)]);
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::Plenty.Order', ['order' => json_encode($order)]);
 
 			// gathering required data for registering the shipment
 
@@ -274,23 +274,23 @@ class ShippingController extends Controller
 				$firstPackage['name'],
 				$deliveryNotice
 			);
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsDaten', ['Doc' => json_encode($containerDoc)]);
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.SendungsDaten', ['Doc' => json_encode($containerDoc)]);
 			$response = $this->webservice->EcourierWS_CreateOrder($containerDoc);
 
 			if (
 				!$response ||
 				(is_array($response) && isset($response['error_msg']))
 			) {
-				$this->getLogger(__METHOD__)->error('BambooEcourier::webservice.WSerr', ['response' => json_encode($response)]);
+				$this->getLogger(__METHOD__)->error('BambooEcourier::Webservice.WSerr', ['response' => json_encode($response)]);
 				continue;
 			} else {
-				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.SendungsErstellung', ['response' => json_encode($response)]);
+				$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.SendungsErstellung', ['response' => json_encode($response)]);
 			}
 
 			$shipmentItems = [];
 			if (isset($response['Doc']['Order'][0]['HWB'])) {
 				$label = $response['Doc']['Order'][0]['Label'];
-				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.PDFs', ['label' => $label]);
+				$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.PDFs', ['label' => $label]);
 
 				// handles the response
 				$shipmentItems = $this->handleAfterRegisterShipment($response, $firstPackage['id']);
@@ -552,7 +552,7 @@ class ShippingController extends Controller
 					continue;
 				}
 				$labelKey = explode('/', $result->labelPath)[1];
-				$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['labelKey' => $labelKey]);
+				$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.S3Storage', ['labelKey' => $labelKey]);
 
 				if ($this->storageRepository->doesObjectExist(self::PLUGIN_KEY, $labelKey)) {
 					$storageObject = $this->storageRepository->getObject(self::PLUGIN_KEY, $labelKey);
@@ -578,12 +578,12 @@ class ShippingController extends Controller
 
 		if (strlen($shipmentData['HWB']) > 0 && isset($shipmentData['Label'])) {
 			$shipmentNumber = $shipmentData['HWB'];
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['length' => strlen($shipmentData['Label'])]);
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.S3Storage', ['length' => strlen($shipmentData['Label'])]);
 			$storageObject = $this->saveLabelToS3(
 				base64_decode($shipmentData['Label']),
 				$packageId . '.pdf'
 			);
-			$this->getLogger(__METHOD__)->debug('BambooEcourier::webservice.S3Storage', ['storageObject' => json_encode($storageObject)]);
+			$this->getLogger(__METHOD__)->debug('BambooEcourier::Webservice.S3Storage', ['storageObject' => json_encode($storageObject)]);
 
 			$shipmentItems[] = $this->buildShipmentItems(
 				'path_to_pdf_in_S3',
