@@ -1,15 +1,33 @@
 {
     "name": "BambooEcourier",
+    "marketplaceName": {
+        "de": "eCourier (bamboo software)",
+        "en": "eCourier (bamboo software)"
+    },
+    "categories": [
+        "4082"
+    ],
     "namespace": "BambooEcourier",
     "type": "shipping",
-    "isClosedSource": true,
-    "version": "0.1.0",
-    "pluginIcon": "icon_plugin_xs.png",
+    "version": "1.0.0",
     "price": 91.99,
     "description": "plentymarkets plugin for TMS eCourier by bamboo software",
+    "shortDescription": {
+        "en": "All-in-one with more than 60 courier services, whether city/direct courier or national + int. express delivery",
+        "de": "All-in-One mit mehr als 60 Kurierdiensten, egal ob Stadt-/Direktkurier oder national + int. Expressversand"
+    },
+    "isClosedSource": true,
+    "serviceProvider": "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
+    "license": "",
+    "pluginIcon": "icon_plugin_xs.png",
     "author": "Bureau Mario Kehl",
     "authorIcon": "icon_author_xs.png",
-    "serviceProvider": "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
+    "email": "bureau@mariokehl.com",
+    "phone": "+49 15678 360279",
+    "keywords": [
+        "plugin",
+        "shipping"
+    ],
     "dependencies": {
         "guzzlehttp/guzzle": "^7.0"
     }

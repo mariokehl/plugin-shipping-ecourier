@@ -1,6 +1,6 @@
-# Release Notes für BambooEcourier
+# Versionshinweise für eCourier (bamboo software)
 
-## v0.0.1
+## v1.0.0 (25.02.2022)
 
 ### Hinzugefügt
-[Weitere Informationen](https://developers.plentymarkets.com/marketplace/plugin-requirements#marketplace-changelog)
+- Erstveröffentlichung
