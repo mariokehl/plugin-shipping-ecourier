@@ -108,15 +108,15 @@ class ShippingController extends Controller
 		$this->config = $config;
 
 		// Get credentials by UI config
-		$partnerBaseUri = $this->config->get('BambooEcourier.baseUri');
-		$partnerApiKey 	= $this->config->get('BambooEcourier.apiKey');
+		$partnerBaseUri = $this->config->get('BambooEcourier.global.baseUri');
+		$partnerApiKey 	= $this->config->get('BambooEcourier.global.apiKey');
 
 		$this->webservice = pluginApp(EcourierWS::class, [
 			$partnerBaseUri,
 			[
 				'apiKey' => $partnerApiKey
 			],
-			$this->config->get('BambooEcourier.mode') === '0' // Demo
+			$this->config->get('BambooEcourier.global.mode') === 'Testing' // Demo
 		]);
 	}
 
@@ -136,12 +136,12 @@ class ShippingController extends Controller
 		$shipmentDate = date('Y-m-d');
 
 		// reads sender data from plugin config
-		$senderName = $this->config->get('BambooEcourier.senderName', 'bamboo Software OHG');
-		$senderStreet = $this->config->get('BambooEcourier.senderStreet', 'Helmholtzstrasse');
-		$senderNo = $this->config->get('BambooEcourier.senderNo', '2-9');
-		$senderCountry = $this->config->get('BambooEcourier.senderCountry', 'DE');
-		$senderPostalCode = $this->config->get('BambooEcourier.senderPostalCode', '10587');
-		$senderTown = $this->config->get('BambooEcourier.senderTown', 'Berlin');
+		$senderName = $this->config->get('BambooEcourier.sender.senderName', 'bamboo Software OHG');
+		$senderStreet = $this->config->get('BambooEcourier.sender.senderStreet', 'Helmholtzstrasse');
+		$senderNo = $this->config->get('BambooEcourier.sender.senderNo', '2-9');
+		$senderCountry = $this->config->get('BambooEcourier.sender.senderCountry', 'DE');
+		$senderPostalCode = $this->config->get('BambooEcourier.sender.senderPostalCode', '10587');
+		$senderTown = $this->config->get('BambooEcourier.sender.senderTown', 'Berlin');
 
 		/** @var EcourierAddress $senderAddress */
 		$senderAddress = pluginApp(EcourierAddress::class, [
@@ -154,8 +154,8 @@ class ShippingController extends Controller
 			$senderTown,
 			$shipmentDate
 		]);
-		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.pickupTimeFrom', '00:00:00'));
-		$senderAddress->setTimeTo($this->config->get('BambooEcourier.pickupTimeTo', '00:00:00'));
+		$senderAddress->setTimeFrom($this->config->get('BambooEcourier.shipping.pickupTimeFrom', '00:00:00'));
+		$senderAddress->setTimeTo($this->config->get('BambooEcourier.shipping.pickupTimeTo', '00:00:00'));
 
 		foreach ($orderIds as $orderId) {
 			$order = $this->orderRepository->findOrderById($orderId);
@@ -191,8 +191,8 @@ class ShippingController extends Controller
 				$receiverTown,
 				date('Y-m-d', strtotime('tomorrow'))
 			]);
-			$receiverAddress->setTimeFrom($this->config->get('BambooEcourier.deliveryTimeFrom', '00:00:00'));
-			$receiverAddress->setTimeTo($this->config->get('BambooEcourier.deliveryTimeTo', '00:00:00'));
+			$receiverAddress->setTimeFrom($this->config->get('BambooEcourier.shipping.deliveryTimeFrom', '00:00:00'));
+			$receiverAddress->setTimeTo($this->config->get('BambooEcourier.shipping.deliveryTimeTo', '00:00:00'));
 			$receiverAddress->setName2($receiverName2);
 			$receiverAddress->setTelefon($receiverPhone);
 			$receiverAddress->setMail($receiverEmail);
@@ -240,7 +240,7 @@ class ShippingController extends Controller
 			}
 
 			// overwrite default delivery notice from comments (must contain @ecourier)
-			$deliveryNotice = $this->config->get('BambooEcourier.deliveryNotice', '');
+			$deliveryNotice = $this->config->get('BambooEcourier.shipping.deliveryNotice', '');
 			/** @var Comment $comment */
 			foreach ($order->comments as $comment) {
 				if (!$comment->userId || !stripos($comment->text, '@ecourier')) {
@@ -257,11 +257,11 @@ class ShippingController extends Controller
 			$receiverAddress->setAddressInfo($deliveryNotice);
 
 			// short delivery notice
-			$shortDeliveryNotice = $this->config->get('BambooEcourier.shortDeliveryNotice', '');
+			$shortDeliveryNotice = $this->config->get('BambooEcourier.shipping.shortDeliveryNotice', '');
 			$receiverAddress->setName3($shortDeliveryNotice);
 
 			// customer reference
-			$ExtOrderId = $this->config->get('BambooEcourier.ExtOrderId', '');
+			$ExtOrderId = $this->config->get('BambooEcourier.webservice.extOrderId', '');
 			$ExtOrderId = str_replace('<tstamp>', time(), $ExtOrderId);
 			$ExtOrderId = str_replace('<n>', str_pad($orderId, 12, '0', STR_PAD_LEFT), $ExtOrderId);
 
@@ -619,7 +619,7 @@ class ShippingController extends Controller
 	) {
 		/** @var EcourierClient $WSClient */
 		$WSClient = pluginApp(EcourierClient::class, [
-			$this->config->get('BambooEcourier.ClientNumber', '25209')
+			$this->config->get('BambooEcourier.webservice.clientNumber', '25209')
 		]);
 
 		/** @var EcourierOrder $Order */
@@ -627,8 +627,8 @@ class ShippingController extends Controller
 			$ExtOrderId,
 			$WSClient,
 			'EUR',
-			$this->config->get('BambooEcourier.ProductClient', '550214'),
-			$this->config->get('BambooEcourier.CarType', ''),
+			$this->config->get('BambooEcourier.webservice.productClient', '550214'),
+			$this->config->get('BambooEcourier.webservice.carType', ''),
 			[
 				$senderAddress,
 				$receiverAddress
