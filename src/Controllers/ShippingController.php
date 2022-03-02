@@ -180,11 +180,11 @@ class ShippingController extends Controller
 
 			// Fix phone number missing in delivery address
 			if (strlen($deliveryAddress->phone)) {
+				$receiverPhone = $deliveryAddress->phone;
+			} else {
 				/** @var Address $billingAddress */
 				$billingAddress = $order->billingAddress;
 				$receiverPhone = $billingAddress->phone;
-			} else {
-				$receiverPhone = $deliveryAddress->phone;
 			}
 
 			$receiverEmail = $deliveryAddress->email;
