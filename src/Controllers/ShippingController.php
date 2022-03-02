@@ -177,13 +177,16 @@ class ShippingController extends Controller
 			$receiverCountry = $deliveryAddress->country->isoCode2;
 			$receiverPostalCode = $deliveryAddress->postalCode;
 			$receiverTown = $deliveryAddress->town;
+
+			// Fix phone number missing in delivery address
 			if (!$deliveryAddress->phone) {
-				$receiverPhone = $deliveryAddress->phone;
-			} else {
 				/** @var Address $billingAddress */
 				$billingAddress = $order->billingAddress;
 				$receiverPhone = $billingAddress->phone;
+			} else {
+				$receiverPhone = $deliveryAddress->phone;
 			}
+
 			$receiverEmail = $deliveryAddress->email;
 
 			/** @var EcourierAddress $receiverAddress */
