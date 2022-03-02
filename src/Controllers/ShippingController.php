@@ -179,7 +179,7 @@ class ShippingController extends Controller
 			$receiverTown = $deliveryAddress->town;
 
 			// Fix phone number missing in delivery address
-			if (!$deliveryAddress->phone) {
+			if (strlen($deliveryAddress->phone)) {
 				/** @var Address $billingAddress */
 				$billingAddress = $order->billingAddress;
 				$receiverPhone = $billingAddress->phone;
