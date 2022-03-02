@@ -163,22 +163,28 @@ class ShippingController extends Controller
 
 			// gathering required data for registering the shipment
 
-			/** @var Address $address */
-			$address = $order->deliveryAddress;
+			/** @var Address $deliveryAddress */
+			$deliveryAddress = $order->deliveryAddress;
 
-			$receiverName1 = implode(' ', [$address->firstName, $address->lastName]);
+			$receiverName1 = implode(' ', [$deliveryAddress->firstName, $deliveryAddress->lastName]);
 			$receiverName2 = '';
-			if (strlen($address->companyName)) {
+			if (strlen($deliveryAddress->companyName)) {
 				$receiverName2 = $receiverName1;
-				$receiverName1 = $address->companyName;
+				$receiverName1 = $deliveryAddress->companyName;
 			}
-			$receiverStreet	= $address->street;
-			$receiverNo	= $address->houseNumber;
-			$receiverCountry = $address->country->isoCode2;
-			$receiverPostalCode = $address->postalCode;
-			$receiverTown = $address->town;
-			$receiverEmail = $address->email;
-			$receiverPhone = $address->phone;
+			$receiverStreet	= $deliveryAddress->street;
+			$receiverNo	= $deliveryAddress->houseNumber;
+			$receiverCountry = $deliveryAddress->country->isoCode2;
+			$receiverPostalCode = $deliveryAddress->postalCode;
+			$receiverTown = $deliveryAddress->town;
+			if (!$deliveryAddress->phone) {
+				$receiverPhone = $deliveryAddress->phone;
+			} else {
+				/** @var Address $billingAddress */
+				$billingAddress = $order->billingAddress;
+				$receiverPhone = $billingAddress->phone;
+			}
+			$receiverEmail = $deliveryAddress->email;
 
 			/** @var EcourierAddress $receiverAddress */
 			$receiverAddress = pluginApp(EcourierAddress::class, [
