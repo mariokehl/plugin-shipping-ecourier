@@ -33,8 +33,7 @@ class BambooEcourierServiceProvider extends ServiceProvider
             ],
             [
                 'BambooEcourier\\Controllers\\ShippingController@registerShipments',
-                'BambooEcourier\\Controllers\\ShippingController@getLabels',
-                'BambooEcourier\\Controllers\\ShippingController@deleteShipments',
+                'BambooEcourier\\Controllers\\ShippingController@getLabels'
             ]
         );
     }

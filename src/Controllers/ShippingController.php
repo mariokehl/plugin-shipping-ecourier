@@ -163,22 +163,31 @@ class ShippingController extends Controller
 
 			// gathering required data for registering the shipment
 
-			/** @var Address $address */
-			$address = $order->deliveryAddress;
+			/** @var Address $deliveryAddress */
+			$deliveryAddress = $order->deliveryAddress;
 
-			$receiverName1 = implode(' ', [$address->firstName, $address->lastName]);
+			$receiverName1 = implode(' ', [$deliveryAddress->firstName, $deliveryAddress->lastName]);
 			$receiverName2 = '';
-			if (strlen($address->companyName)) {
+			if (strlen($deliveryAddress->companyName)) {
 				$receiverName2 = $receiverName1;
-				$receiverName1 = $address->companyName;
+				$receiverName1 = $deliveryAddress->companyName;
 			}
-			$receiverStreet	= $address->street;
-			$receiverNo	= $address->houseNumber;
-			$receiverCountry = $address->country->isoCode2;
-			$receiverPostalCode = $address->postalCode;
-			$receiverTown = $address->town;
-			$receiverEmail = $address->email;
-			$receiverPhone = $address->phone;
+			$receiverStreet	= $deliveryAddress->street;
+			$receiverNo	= $deliveryAddress->houseNumber;
+			$receiverCountry = $deliveryAddress->country->isoCode2;
+			$receiverPostalCode = $deliveryAddress->postalCode;
+			$receiverTown = $deliveryAddress->town;
+
+			// Fix phone number missing in delivery address
+			if (strlen($deliveryAddress->phone)) {
+				$receiverPhone = $deliveryAddress->phone;
+			} else {
+				/** @var Address $billingAddress */
+				$billingAddress = $order->billingAddress;
+				$receiverPhone = $billingAddress->phone;
+			}
+
+			$receiverEmail = $deliveryAddress->email;
 
 			/** @var EcourierAddress $receiverAddress */
 			$receiverAddress = pluginApp(EcourierAddress::class, [
@@ -318,50 +327,6 @@ class ShippingController extends Controller
 		// return all results to service
 		return $this->createOrderResult;
 	}
-
-	/**
-	 * Cancels registered shipment(s)
-	 *
-	 * @param Request $request
-	 * @param array $orderIds
-	 * @deprecated Unused right now
-	 * @internal see BambooEcourierServiceProvider
-	 * @return array
-	 */
-	public function deleteShipments(Request $request, $orderIds)
-	{
-		$orderIds = $this->getOrderIds($request, $orderIds);
-		foreach ($orderIds as $orderId) {
-			$shippingInformation = $this->shippingInformationRepositoryContract->getShippingInformationByOrderId($orderId);
-
-			if (isset($shippingInformation->additionalData) && is_array($shippingInformation->additionalData)) {
-				foreach ($shippingInformation->additionalData as $additionalData) {
-					try {
-						$shipmentNumber = $additionalData['shipmentNumber'];
-
-						// use the shipping service provider's API here
-						$response = '';
-
-						$this->createOrderResult[$orderId] = $this->buildResultArray(
-							true,
-							'shipment deleted',
-							false,
-							null
-						);
-					} catch (\Exception $e) {
-						// exception handling
-					}
-				}
-
-				// resets the shipping information of current order
-				$this->shippingInformationRepositoryContract->resetShippingInformation($orderId);
-			}
-		}
-
-		// return result array
-		return $this->createOrderResult;
-	}
-
 
 	/**
 	 * Retrieves the label file from PDFs response and saves it in S3 storage
