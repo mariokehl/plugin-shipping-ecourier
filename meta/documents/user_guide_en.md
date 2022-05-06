@@ -49,16 +49,16 @@ Enter your address data according to registration in the **Sender** area. You ca
 
 If the plugin has been successfully installed and the tests have been successful, it is time to make the shipping service provider selectable as an option in the checkout of your shop.
 
-1. Activate your **[delivery countries](https://knowledge.plentymarkets.com/en/slp/fulfillment/versand-vorbereiten#100)**
-2. Create your (shipping)**[regions](https://knowledge.plentymarkets.com/en/slp/fulfillment/versand-vorbereiten#400)**
-3. Create your **[Shipping Service Provider](https://knowledge.plentymarkets.com/en/slp/fulfillment/versand-vorbereiten#800)** _**DER KURIER**_
+1. Activate your **[delivery countries](https://knowledge.plentymarkets.com/en-gb/manual/main/fulfilment/preparing-the-shipment.html#200)**
+2. Create your (shipping)**[regions](https://knowledge.plentymarkets.com/en-gb/manual/main/fulfilment/preparing-the-shipment.html#400)**
+3. Create your **[Shipping Service Provider](https://knowledge.plentymarkets.com/en-gb/manual/main/fulfilment/preparing-the-shipment.html#800)** _**DER KURIER**_
   * Choose _**Sonstiges**_ in the _Shipping Service Provider_ column
   * Store `https://leotrace.derkurier.de/paketstatusNeu.aspx?Lang=DE&parcel=$PaketNr&ZIP=$PLZ` as tracking URL
-4. Create your **[shipping profiles](https://knowledge.plentymarkets.com/en/slp/fulfillment/versand-vorbereiten#1000)** and **[table of shipping charges](https://knowledge.plentymarkets.com/en/slp/fulfillment/versand-vorbereiten#1500)** for _**DER KURIER**_
+4. Create your **[shipping profiles](https://knowledge.plentymarkets.com/en-gb/manual/main/fulfilment/preparing-the-shipment.html#1000)** and **[table of shipping charges](https://knowledge.plentymarkets.com/en-gb/manual/main/fulfilment/preparing-the-shipment.html#1500)** for _**DER KURIER**_
 
 #### GDPR: Information on data transmission (email and telephone)
 
-You can configure this in your shipping profile using the option **[Transfer email and phone](https://knowledge.plentymarkets.com/en/slp/business-entscheidungen/rechtliches/dsgvo#700)**. The customer's e-mail address and telephone number are not mandatory fields in the interface. So you don't necessarily have to transfer them.
+You can configure this in your shipping profile using the option **[Transfer email and phone](https://knowledge.plentymarkets.com/en-gb/manual/main/business-decisions/gdpr.html#700)**. The customer's e-mail address and telephone number are not mandatory fields in the interface. So you don't necessarily have to transfer them.
 
 ## Credits
 
