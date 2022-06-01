@@ -16,6 +16,9 @@
         "en": "All-in-one with more than 60 courier services, whether city/direct courier or national + int. express delivery",
         "de": "All-in-One mit mehr als 60 Kurierdiensten, egal ob Stadt-/Direktkurier oder national + int. Expressversand"
     },
+    "platform": {
+        "php": ">=7.3 <=8.1"
+    },
     "isClosedSource": true,
     "serviceProvider": "BambooEcourier\\Providers\\BambooEcourierServiceProvider",
     "license": "",
