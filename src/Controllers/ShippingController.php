@@ -175,6 +175,7 @@ class ShippingController extends Controller
 			$receiverStreet	= $deliveryAddress->street;
 			$receiverNo	= $deliveryAddress->houseNumber;
 			$receiverCountry = $deliveryAddress->country->isoCode2;
+			// TODO: validate user input and throw error if it's not 5-digit for DE or 4-digit for AT
 			$receiverPostalCode = $deliveryAddress->postalCode;
 			$receiverTown = $deliveryAddress->town;
 
