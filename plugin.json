@@ -9,7 +9,7 @@
     ],
     "namespace": "BambooEcourier",
     "type": "shipping",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "price": 91.99,
     "description": "plentymarkets plugin for TMS eCourier by bamboo software",
     "shortDescription": {
