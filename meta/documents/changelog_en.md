@@ -1,5 +1,13 @@
 # Release Notes for eCourier (bamboo software)
 
+## v1.0.2 (2022-07-13)
+
+### Added
+- When the order is registered, the length of the postal code stored in the delivery address is validated. If this is not 5 digits for Germany or 4 digits for Austria, an error is output and the shipment cannot be registered
+
+### Fixed
+- PHP 8 compatibility indicator set after source code check
+
 ## v1.0.1 (2022-05-06)
 
 ### Changed

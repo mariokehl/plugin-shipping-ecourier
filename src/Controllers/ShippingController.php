@@ -176,6 +176,16 @@ class ShippingController extends Controller
 			$receiverNo	= $deliveryAddress->houseNumber;
 			$receiverCountry = $deliveryAddress->country->isoCode2;
 			$receiverPostalCode = $deliveryAddress->postalCode;
+			if (($receiverCountry == 'DE' && strlen($receiverPostalCode) != 5) ||
+				($receiverCountry == 'AT' && strlen($receiverPostalCode) != 4)) {
+				$this->createOrderResult[$orderId] = $this->buildResultArray(
+					false,
+					'PLZ ' . $receiverPostalCode . ' hat falsche Länge für Lieferland ' . $receiverCountry . ', Lieferadresse korrigieren!',
+					false,
+					[]
+				);
+				continue;
+			}
 			$receiverTown = $deliveryAddress->town;
 
 			// Fix phone number missing in delivery address
