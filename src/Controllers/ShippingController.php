@@ -174,6 +174,15 @@ class ShippingController extends Controller
 			}
 			$receiverStreet	= $deliveryAddress->street;
 			$receiverNo	= $deliveryAddress->houseNumber;
+			if (!strlen($receiverNo)) {
+				$this->createOrderResult[$orderId] = $this->buildResultArray(
+					false,
+					'Hausnummer fehlt, Lieferadresse korrigieren!',
+					false,
+					[]
+				);
+				continue;
+			}
 			$receiverCountry = $deliveryAddress->country->isoCode2;
 			$receiverPostalCode = $deliveryAddress->postalCode;
 			if (($receiverCountry == 'DE' && strlen($receiverPostalCode) != 5) ||
