@@ -1,5 +1,10 @@
 # Release Notes for eCourier (bamboo software)
 
+## v1.0.3 (2022-07-22)
+
+### Added
+- When registering the order, the house number of the delivery address is now validated. If this is not available or entered incorrectly in the additional address field, an error is output and the shipment cannot be registered
+
 ## v1.0.2 (2022-07-13)
 
 ### Added

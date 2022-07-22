@@ -1,5 +1,10 @@
 # Versionshinweise für eCourier (bamboo software)
 
+## v1.0.3 (22.07.2022)
+
+### Hinzugefügt
+- Bei Anmeldung des Auftrags wird nun die Hausnummer der Lieferadresse validiert. Ist diese nicht vorhanden oder fälschlicherweise im Feld Adresszusatz eingetragen, wird ein Fehler ausgegeben und die Sendung kann nicht angemeldet werden
+
 ## v1.0.2 (13.07.2022)
 
 ### Hinzugefügt
