@@ -1,5 +1,10 @@
 # Release Notes for eCourier (bamboo software)
 
+## v1.0.4 (2023-02-06)
+
+### Changed
+- The pricing model for one-time purchases has been adjusted
+
 ## v1.0.3 (2022-07-22)
 
 ### Added
