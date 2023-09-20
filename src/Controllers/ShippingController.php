@@ -288,14 +288,9 @@ class ShippingController extends Controller
 			$shortDeliveryNotice = $this->config->get('BambooEcourier.shipping.shortDeliveryNotice', '');
 			$receiverAddress->setName3($shortDeliveryNotice);
 
-			// customer reference
-			$ExtOrderId = $this->config->get('BambooEcourier.webservice.extOrderId', '');
-			$ExtOrderId = str_replace('<tstamp>', time(), $ExtOrderId);
-			$ExtOrderId = str_replace('<n>', str_pad($orderId, 12, '0', STR_PAD_LEFT), $ExtOrderId);
-
 			// register shipment
 			$containerDoc = $this->prepareDocumentForEcourier(
-				$ExtOrderId,
+				$orderId,
 				$senderAddress,
 				$receiverAddress,
 				$parcelData,
@@ -585,7 +580,7 @@ class ShippingController extends Controller
 	/**
 	 * Prepare data for transport as JSON via the interface
 	 *
-	 * @param string $ExtOrderId
+	 * @param integer $plentyOrderId
 	 * @param EcourierAddress $senderAddress
 	 * @param EcourierAddress $receiverAddress
 	 * @param array $parcelData
@@ -594,7 +589,7 @@ class ShippingController extends Controller
 	 * @return EcourierDoc
 	 */
 	private function prepareDocumentForEcourier(
-		$ExtOrderId,
+		$plentyOrderId,
 		$senderAddress,
 		$receiverAddress,
 		$parcelData,
@@ -605,6 +600,11 @@ class ShippingController extends Controller
 		$WSClient = pluginApp(EcourierClient::class, [
 			$this->config->get('BambooEcourier.webservice.clientNumber', '25209')
 		]);
+
+		// customer reference
+		$ExtOrderId = $this->config->get('BambooEcourier.webservice.extOrderId', '');
+		$ExtOrderId = str_replace('<tstamp>', time(), $ExtOrderId);
+		$ExtOrderId = str_replace('<n>', str_pad($plentyOrderId, 12, '0', STR_PAD_LEFT), $ExtOrderId);
 
 		/** @var EcourierOrder $Order */
 		$Order = pluginApp(EcourierOrder::class, [
@@ -619,6 +619,7 @@ class ShippingController extends Controller
 			],
 			$parcelData
 		]);
+		$Order->setReference1((string)$plentyOrderId);
 		$Order->setContent($Content);
 		$Order->setInfoCourier($InfoCourier);
 
