@@ -9,10 +9,20 @@ class Order
     const LABEL_FORMAT_A6L = 'A6l';
 
     /**
+     * eindeutige Auftragsnummer es externen Systemes
+     * 
      * @var string $ExtOrderId
      * @access public
      */
     public $ExtOrderId = null;
+
+    /**
+     * interne Belegnummer
+     *
+     * @var string $Reference1
+     * @access public
+     */
+    public $Reference1 = null;
 
     /**
      * @var string $LabelFormat
@@ -92,6 +102,19 @@ class Order
         $this->CarType = $CarType;
         $this->Address = $Address;
         $this->Package = $Package;
+    }
+
+    /**
+     * Set the value of Reference1
+     *
+     * @param string $plentyOrderId
+     * @return self
+     */
+    public function setReference1($plentyOrderId): self
+    {
+        $this->Reference1 = $plentyOrderId;
+
+        return $this;
     }
 
     /**
